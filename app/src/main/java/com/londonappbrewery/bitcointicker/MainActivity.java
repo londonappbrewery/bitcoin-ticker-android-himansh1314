@@ -12,19 +12,24 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Toast;
 
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import cz.msebera.android.httpclient.Header;
 
 
 public class MainActivity extends AppCompatActivity {
 
     // Constants:
     // TODO: Create the base URL
-    private final String BASE_URL = "https://apiv2.bitcoin ...";
+    private final String GET_URL = "https://apiv2.bitcoinaverage.com/indices/global/ticker/BTC";
 
     // Member Variables:
     TextView mPriceTextView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,11 +52,56 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Log.d("Bitcoin",""+parent.getItemAtPosition(position));
+                String selectedItem = (String)parent.getItemAtPosition(position);
+                Log.d("Bitcoin", ""+selectedItem);
+                switch(selectedItem){
+                    case "AUD":
+                        letsDoSomeNetworking(GET_URL+"AUD");
+                        break;
+                    case "BRL":
+                        letsDoSomeNetworking(GET_URL+"BRL");
+                        break;
+                    case "CAD":
+                        letsDoSomeNetworking(GET_URL+"CAD");
+                        break;
+                    case "CNY":
+                        letsDoSomeNetworking(GET_URL+"CNY");
+                        break;
+                    case "EUR":
+                        letsDoSomeNetworking(GET_URL+"EUR");
+                        break;
+                    case "GBP":
+                        letsDoSomeNetworking(GET_URL+"GBP");
+                        break;
+                    case "HKD":
+                        letsDoSomeNetworking(GET_URL+"HKD");
+                        break;
+                    case "JPY":
+                        letsDoSomeNetworking(GET_URL+"JPY");
+                        break;
+                    case "PLN":
+                        letsDoSomeNetworking(GET_URL+"PLN");
+                        break;
+                    case "RUB":
+                        letsDoSomeNetworking(GET_URL+"RUB");
+                        break;
+                    case "SEK":
+                        letsDoSomeNetworking(GET_URL+"SEK");
+                        break;
+                    case "USD":
+                        letsDoSomeNetworking(GET_URL+"USD");
+                        break;
+                    case "ZAR":
+                        letsDoSomeNetworking(GET_URL+"ZAR");
+                        break;
+                    case "INR":
+                        letsDoSomeNetworking(GET_URL+"INR");
+                }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
+                Log.d("Bitcoin", "Nothing selected, try again");
             }
         });
 
@@ -63,26 +113,24 @@ public class MainActivity extends AppCompatActivity {
     // TODO: complete the letsDoSomeNetworking() method
     private void letsDoSomeNetworking(String url) {
 
-//        AsyncHttpClient client = new AsyncHttpClient();
-//        client.get(WEATHER_URL, params, new JsonHttpResponseHandler() {
-//
-//            @Override
-//            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-//                // called when response HTTP status is "200 OK"
-//                Log.d("Clima", "JSON: " + response.toString());
-//                WeatherDataModel weatherData = WeatherDataModel.fromJson(response);
-//                updateUI(weatherData);
-//            }
-//
-//            @Override
-//            public void onFailure(int statusCode, Header[] headers, Throwable e, JSONObject response) {
-//                // called when response HTTP status is "4XX" (eg. 401, 403, 404)
-//                Log.d("Clima", "Request fail! Status code: " + statusCode);
-//                Log.d("Clima", "Fail response: " + response);
-//                Log.e("ERROR", e.toString());
-//                Toast.makeText(WeatherController.this, "Request Failed", Toast.LENGTH_SHORT).show();
-//            }
-//        });
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.get(url, new JsonHttpResponseHandler() {
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                // called when response HTTP status is "200 OK"
+                Log.d("Bitcoin", "JSON: " + response.toString());
+                BitcoinDataModel dataModel = BitcoinDataModel.fromJSON(response);
+                mPriceTextView.setText(dataModel.getValue());
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable e, JSONObject response) {
+                // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+                Log.e("Bitcoin", ""+e.toString());
+
+            }
+        });
 
 
     }
